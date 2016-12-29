@@ -1,30 +1,39 @@
 import pathlib
 import os
 import shutil
+''' Guidelines for USER INPUT:
+FIRST LINE of input is a path specification (i.e. "C:\users\Ryan\pass").
+SECOND LINE of input is a filter for the files. E for ending (i.e. E .txt will yield files ending in txt).
+S for size minimum (i.e. S 200 will yield files that take more than 200 bytes).
+N for file name (i.e. N japan will search for a file named japan and append it to files.
+THIRD LINE of input specifies an action. T will touch the file (change the timestamp to now).
+P will print the path to the console. F will read the first line of each file. D will make a 
+duplicate copy with ".dup" attached to the end'''
 
-class CheckPath(object):
+class CheckPath(object): #Checks your path and filters your files and does stuff with the files
     def __init__(self):
         pass
     def setUp(self):
-        global lines
+        global lines #global because it is used in the other methods
         lines=[]
-        for i in range (3):
-            a=input()
-            lines.append(a)
+
+        for i in range (3): #gets input for the three main lines
+            a=input() 
+            lines.append(a) 
         lines[0]=lines[0].replace("\\", r"\\\\")
         return lines[0]
         
-    def action1(self,firstRow):
+    def action1(self,firstRow): #evaluates the input of the first line, which should be a path
         if(pathlib.Path(firstRow).exists()):
             #print (firstRow)
             pass
         else:
             print ('Error')
             firstRow=input('enter another')
-            self.action1(firstRow)
+            self.action1(firstRow) #Recursively calls the function until a valid first line input is entered
         return firstRow,lines[1]
     
-    def action2(self,first,second):
+    def action2(self,first,second):# evaluates the input of the second line
         files=[]
         q=first
         if second[0]=='N':
@@ -71,8 +80,8 @@ class CheckPath(object):
                 self.action3(files)
         return 
     
-a=CheckPath()
-first=a.setUp()
-first,second=a.action1(first)
-files=a.action2(first,second)
-end=a.action3(files)
+a=CheckPath() #Initializes an object "a" that is an instance of CheckPath
+first=a.setUp() #Calls the setUp method
+first,second=a.action1(first) #Calls the action1 method
+files=a.action2(first,second) #Calls the action2 method
+end=a.action3(files) #Calls the action3 method
