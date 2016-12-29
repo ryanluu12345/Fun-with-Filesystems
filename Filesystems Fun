@@ -1,0 +1,78 @@
+import pathlib
+import os
+import shutil
+
+class CheckPath(object):
+    def __init__(self):
+        pass
+    def setUp(self):
+        global lines
+        lines=[]
+        for i in range (3):
+            a=input()
+            lines.append(a)
+        lines[0]=lines[0].replace("\\", r"\\\\")
+        return lines[0]
+        
+    def action1(self,firstRow):
+        if(pathlib.Path(firstRow).exists()):
+            #print (firstRow)
+            pass
+        else:
+            print ('Error')
+            firstRow=input('enter another')
+            self.action1(firstRow)
+        return firstRow,lines[1]
+    
+    def action2(self,first,second):
+        files=[]
+        q=first
+        if second[0]=='N':
+            string=second[2:]
+            newPath=pathlib.Path(q+'\\' + string)
+            if (newPath.is_file()):
+                files.append(newPath)
+        elif second[0]=='E':
+            q=pathlib.Path(first)
+            string='*'+second[2:]
+            for child in q.iterdir():
+                if (pathlib.Path(child).match(string)):
+                    files.append(child)
+        elif second[0]=='S':
+            print (first) #del later
+            q=pathlib.Path(first)
+            print (q) #del later
+            for child in q.iterdir():
+                b=os.stat(child).st_size
+                if b>int(second[2:]):
+                    files.append(child)
+        else:
+            print ('ERROR')
+            second=input()
+            files=self.action2(first,second)
+        return files #change to files later
+    
+    def action3(self,files):
+        for i in range(len(files)):
+            print (files[i])
+            if lines[2]=="P":
+                pass
+            elif lines[2]=="F":
+                f=open(files[i],'r')
+                d=f.readline()
+                print(d)
+            elif lines[2]=="T":
+                files[i].touch(mode=0o666,exist_ok=True)
+            elif lines[2]=="D":
+                start=str(files[i])
+                end=start+'.dup'
+                shutil.copy(start,end)
+            else:
+                self.action3(files)
+        return 
+    
+a=CheckPath()
+first=a.setUp()
+first,second=a.action1(first)
+files=a.action2(first,second)
+end=a.action3(files)
